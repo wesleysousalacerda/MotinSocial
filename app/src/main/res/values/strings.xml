@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MotinSocial</string>
+    <string name="hint_name">Nome de usuario</string>
+    <string name="hint_email">Email</string>
+    <string name="action_save">Salvar</string>
+    <string name="name">Nome de Usuario</string>
+    <string name="demanda">Qual a sua demanda?</string>
+    <string name="servico">Empresa-Fornecedor-Serviço</string>
+    <string name="email">Email</string>
 </resources>
