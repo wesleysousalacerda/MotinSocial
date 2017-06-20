@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
         btnSave = (Button) findViewById(R.id.btn_save);
         btnRemove = (Button) findViewById(R.id.btn_remove);
 
-
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         mFirebaseInstance = FirebaseDatabase.getInstance();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+
 
 
         // get reference to 'motins' node

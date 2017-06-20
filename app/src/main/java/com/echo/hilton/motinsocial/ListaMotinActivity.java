@@ -1,8 +1,11 @@
 package com.echo.hilton.motinsocial;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -12,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +34,7 @@ public class ListaMotinActivity extends AppCompatActivity{
         setContentView(R.layout.activity_lista_motins);
         final ListView listView = (ListView) findViewById(R.id.listaMotin);
         mFirebaseInstance = FirebaseDatabase.getInstance();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+//        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
 
         // get reference to 'motins' node
@@ -53,7 +57,17 @@ public class ListaMotinActivity extends AppCompatActivity{
                                 motins);
                 listView.setAdapter(adapter);
 
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> lista, View view, int position, long id) {
+                        Motin motin= (Motin) lista.getItemAtPosition(position);
+                        Intent i = new Intent(ListaMotinActivity.this, MainActivity.class);
+                        i.putExtra("Motin", (Serializable) motin);
+                        startActivity(i);
+                    }
+                });
             }
+
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

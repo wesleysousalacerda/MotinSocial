@@ -17,6 +17,10 @@ public class Motin {
         this.email = email;
     }
 
+    public Motin() {
+
+    }
+
     public String getEmail() {
         return email;
     }
@@ -47,5 +51,10 @@ public class Motin {
 
     public void setServico(String servico) {
         this.servico = servico;
+    }
+    @Override
+    public String toString() {
+        return "Usuario: " + nome + " Demanda: " +
+                demanda + " Empresa: " + servico;
     }
 }
