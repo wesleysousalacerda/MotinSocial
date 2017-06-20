@@ -3,6 +3,8 @@
     <string name="hint_name">Nome de usuario</string>
     <string name="hint_email">Email</string>
     <string name="action_save">Salvar</string>
+    <string name="action_remove">Remover</string>
+    <string name="action_lista">Ver Lista</string>
     <string name="name">Nome de Usuario</string>
     <string name="demanda">Qual a sua demanda?</string>
     <string name="servico">Empresa-Fornecedor-Serviço</string>

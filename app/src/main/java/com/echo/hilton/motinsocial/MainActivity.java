@@ -1,5 +1,6 @@
 package com.echo.hilton.motinsocial;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,11 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private TextView txtDetails;
     private EditText inputName,inputDemanda,inputServico, inputEmail;
-    private Button btnSave;
+    private Button btnSave, btnRemove;
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseInstance;
 
-    private String userId;
+    private String motinId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,12 +41,14 @@ public class MainActivity extends AppCompatActivity {
         inputEmail = (EditText) findViewById(R.id.email);
 
         btnSave = (Button) findViewById(R.id.btn_save);
+        btnRemove = (Button) findViewById(R.id.btn_remove);
+
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
         FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
 
-        // get reference to 'users' node
+        // get reference to 'motins' node
         mFirebaseDatabase = mFirebaseInstance.getReference("motins");
 
         // store app title to 'app_title' node
@@ -68,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // Save / update the user
+        // Save / update the motin
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -79,11 +83,33 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                // Check for already existed userId
-                if (TextUtils.isEmpty(userId)) {
+                // Check for already existed motinId
+                if (TextUtils.isEmpty(motinId)) {
                     createMotin(nome,demanda,servico, email);
+                    Toast.makeText(getApplicationContext(), "Motin Criado com Sucesso", Toast.LENGTH_LONG).show();
+
                 } else {
                     updateMotin(nome,demanda,servico, email);
+                    Toast.makeText(getApplicationContext(), "Motin Atualizado com Sucesso", Toast.LENGTH_LONG).show();
+
+                }
+            }
+        });
+        // Delete motin
+        btnRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // Check for already existed motinId
+                if (TextUtils.isEmpty(motinId)) {
+                    Toast.makeText(getApplicationContext(), "Nao ha nada a ser deletado", Toast.LENGTH_LONG).show();
+
+
+                } else {
+                    mFirebaseDatabase.child(motinId).removeValue();
+                    Log.e(TAG, "Motin deletado com sucesso");
+                    Toast.makeText(getApplicationContext(), "Motin Deletado com Sucesso", Toast.LENGTH_LONG).show();
+
+
                 }
             }
         });
@@ -93,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Changing button text
     private void toggleButton() {
-        if (TextUtils.isEmpty(userId)) {
+        if (TextUtils.isEmpty(motinId)) {
             btnSave.setText("Save");
         } else {
             btnSave.setText("Update");
@@ -105,25 +131,26 @@ public class MainActivity extends AppCompatActivity {
      */
     private void createMotin(String nome, String demanda, String servico, String email) {
         // TODO
-        // In real apps this userId should be fetched
+        // Fazer autenticacao do firebase.
+        // In real apps this motinId should be fetched
         // by implementing firebase auth
-        if (TextUtils.isEmpty(userId)) {
-            userId = mFirebaseDatabase.push().getKey();
+        if (TextUtils.isEmpty(motinId)) {
+            motinId = mFirebaseDatabase.push().getKey(); //Push creates a unique code for users.
         }
 
         Motin user = new Motin(nome,demanda,servico,email);
 
-        mFirebaseDatabase.child(userId).setValue(user);
+        mFirebaseDatabase.child(motinId).setValue(user);
 
-        addUserChangeListener();
+        addMotinChangeListener();
     }
 
     /**
-     * User data change listener
+     * Motin data change listener
      */
-    private void addUserChangeListener() {
-        // User data change listener
-        mFirebaseDatabase.child(userId).addValueEventListener(new ValueEventListener() {
+    private void addMotinChangeListener() {
+        // Motin data change listener
+        mFirebaseDatabase.child(motinId).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Motin motin = dataSnapshot.getValue(Motin.class);
@@ -159,12 +186,17 @@ public class MainActivity extends AppCompatActivity {
     private void updateMotin(String nome,String demanda, String servico, String email) {
         // updating the user via child nodes
         if (!TextUtils.isEmpty(nome))
-            mFirebaseDatabase.child(userId).child("nome").setValue(nome);
+            mFirebaseDatabase.child(motinId).child("nome").setValue(nome);
         if (!TextUtils.isEmpty(demanda))
-            mFirebaseDatabase.child(userId).child("demanda").setValue(demanda);
+            mFirebaseDatabase.child(motinId).child("demanda").setValue(demanda);
         if (!TextUtils.isEmpty(servico))
-            mFirebaseDatabase.child(userId).child("servico").setValue(servico);
+            mFirebaseDatabase.child(motinId).child("servico").setValue(servico);
         if (!TextUtils.isEmpty(email))
-            mFirebaseDatabase.child(userId).child("email").setValue(email);
+            mFirebaseDatabase.child(motinId).child("email").setValue(email);
+    }
+
+    public void VerLista(View view) {
+        Intent i = new Intent(MainActivity.this, ListaMotinActivity.class);
+        startActivity(i);
     }
 }
